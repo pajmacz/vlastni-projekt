@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Pavlovi evil otazky - NEPŘÍTEL{% endblock %}
+
+{% block extra_style %}
+<style>
+    body {
+        background: linear-gradient(135deg, #110014 0%, #3b0c2d 50%, #09000d 100%);
+        color: #f0e8ff;
+    }
+    
+    body::before {
+        content: "💀💀💀";
+        opacity: 0.25;
+    }
+    
+    body::after {
+        content: "🌑🌑🌑";
+        opacity: 0.18;
+    }
+    
+    @keyframes glowPurple {
+        0%, 100% { text-shadow: 0 0 10px #9933ff, 0 0 20px #6600ff; }
+        50% { text-shadow: 0 0 20px #cc66ff, 0 0 40px #9933ff; }
+    }
+    
+    .container {
+        max-width: 620px;
+        background: rgba(10, 0, 20, 0.8);
+        border: 3px solid #9933ff;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 0 30px rgba(153, 51, 255, 0.25), inset 0 0 20px rgba(153, 51, 255, 0.08);
+    }
+    
+    .container::before {
+        content: "👿";
+        position: absolute;
+        top: 10px;
+        right: 22px;
+        font-size: 20px;
+        opacity: 0.7;
+    }
+    
+    .container::after {
+        content: "👾";
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        font-size: 20px;
+        opacity: 0.7;
+    }
+    
+    h1 {
+        color: #cc66ff;
+        font-size: 30px;
+        margin-bottom: 12px;
+        animation: glowPurple 2s ease-in-out infinite;
+    }
+    
+    .subtitle {
+        color: #b49cff;
+        font-size: 15px;
+        margin-bottom: 22px;
+    }
+    
+    .question {
+        background: rgba(153, 102, 255, 0.08);
+        border-left-color: #cc66ff;
+        color: #f0e8ff;
+        padding: 18px;
+    }
+    
+    hr {
+        background: linear-gradient(90deg, transparent, #cc66ff, transparent);
+    }
+    
+    .answer {
+        padding: 18px;
+        margin: 18px 0;
+    }
+    
+    .answer.correct {
+        background: rgba(0, 255, 128, 0.15);
+        border: 2px solid #66ff99;
+        color: #b6ffcb;
+    }
+    
+    .answer.wrong {
+        background: rgba(255, 0, 64, 0.18);
+        border: 2px solid #ff3399;
+        color: #ff99cc;
+    }
+    
+    .image-wrap img {
+        border-color: #cc66ff;
+        box-shadow: 0 0 20px rgba(204, 102, 255, 0.35);
+    }
+    
+    input[type="text"] {
+        background: rgba(20, 0, 30, 0.85);
+        border-color: #cc66ff;
+        color: #f0e8ff;
+        padding: 14px;
+        font-size: 15px;
+    }
+    
+    input[type="text"]:focus {
+        border-color: #ff99ff;
+        box-shadow: 0 0 12px rgba(255, 153, 255, 0.4);
+    }
+    
+    button {
+        background: linear-gradient(135deg, #9933ff, #cc66ff);
+        padding: 14px;
+        box-shadow: 0 4px 18px rgba(204, 102, 255, 0.35);
+    }
+    
+    button:hover {
+        background: linear-gradient(135deg, #b566ff, #e099ff);
+        box-shadow: 0 6px 24px rgba(204, 102, 255, 0.45);
+    }
+    
+    form {
+        gap: 16px;
+        margin-top: 22px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>👾 NEPŘÍTELSKÁ ZKOUŠKA 👾</h1>
+    <p class="subtitle">Odhal mého rivala.</p>
+    
+    <div class="question">
+        <strong>❓ Jak se jmenuje ten, ktérý mě chce zničit?</strong>
+    </div>
+    
+    <hr>
+    
+    {% if chyba %}
+        <div class="error">
+            ⚠️ {{ chyba }}
+        </div>
+    {% endif %}
+    
+    {% if odpoved is not none %}
+        {% if odpoved=="správná" %}
+            <div class="answer correct">
+                ✨ Vašek je tu! Utíkejte!!! ✨
+                <div class="image-wrap">
+                    <img src="{{ url_for('static', filename='images/vašek.png') }}" alt="Vašek">
+                </div>
+            </div>
+        {% elif odpoved=="špatná" %}
+            {% if pocet_pokusu < 4 %}
+                <div class="answer wrong">
+                    💥 To není on, mého srdce šampión 💥<br>
+                    <small>Pokusů: {{ pocet_pokusu }}/3</small>
+                </div>
+            {% else %}
+                <div class="answer wrong">
+                    😈 Je to on trávníček 😈<br>
+                    <small style="color: #ff99cc;">Již {{ pocet_pokusu }} pokusů!</small>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    
+    <form method="POST">
+        <input type="text" name="heslo" placeholder="🔮 Napiš jeho jméno..." required>
+        <button type="submit">💜 Odeslat odpověď</button>
+    </form>
+{% endblock %}
